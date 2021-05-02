@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<dds>
+    <qos_library name="HelloWorld_Library">
+        <qos_profile name="HelloWorld_Profile" is_default_qos="true">               
+            <datawriter_qos>
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                    <max_blocking_time>
+                        <sec>60</sec>
+                    </max_blocking_time>
+                </reliability>                
+
+                <history>
+                    <kind>KEEP_ALL_HISTORY_QOS</kind>
+                </history>
+
+                <protocol>
+                    <rtps_reliable_writer>
+                        <min_send_window_size>50</min_send_window_size>
+                        <max_send_window_size>50</max_send_window_size>
+                    </rtps_reliable_writer>
+                </protocol>
+            </datawriter_qos>
+              
+            <datareader_qos>
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>                
+
+                <history>
+                    <kind>KEEP_ALL_HISTORY_QOS</kind>
+                </history>
+            </datareader_qos>
+
+            <participant_qos>
+                <participant_name>
+                    <name>ZH "Hello, World" Example</name>
+                </participant_name>
+            </participant_qos>
+        </qos_profile>
+
+    </qos_library>
+</dds>

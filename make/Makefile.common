@@ -1,0 +1,128 @@
+# This Makefile contains the common rules to build for all the architectures.
+# It is included from the architecture-specific Makefile.
+# This Makefile requires the following variables:
+# - ARCH: Architecture to build (for example i86Linux2.6gcc4.1.1)
+#
+# Optional variables:
+# - DEBUG: If set to '1', it turns on debugging information
+# - SHAREDLIB: If set to '1', shared libraries will be used
+# - CXX: compiler name.
+# - CXXFLAGS: compiler flags: will be appended to $CXX command-line
+# - CXXLD: linker name.
+# - CXXLDFLAGS: linker flags: will be inserted at the beginning of CXXLD cmdline
+# - SYSLIBS: additional system libraries to append to the CXXLD command-line
+
+###############################################################################
+# Ensure this Makefile is invoked with the right variable set
+###############################################################################
+ifeq ($(ARCH), )
+all:
+	@echo "***************************************************************"
+	@echo "You cannot use this Makefile directly, instead use the"
+	@echo "architecture-specific Makefile. For example:"
+	@echo "         gmake -f make/Makefile.i86Linux2.6gcc4.1.1"
+	@echo "***************************************************************"
+	@false
+else
+###############################################################################
+# Ensure $ZHDDSHOME is defined
+###############################################################################
+ifeq ($(ZHDDSHOME), )
+all:
+	@echo "***************************************************************"
+	@echo "The environment variable 'ZHDDSHOME' is not set!"
+	@echo "To use this makefile you need to set ZHDDSHOME to the directory"
+	@echo "where you have ZH Data Distribution Service installed."
+	@echo "***************************************************************"
+	@false
+endif
+endif
+
+
+# Define the sources and ZHDDS search path
+INCLUDES = -Isrc -Isrc/idl -I$(ZHDDSHOME)/include -I$(ZHDDSHOME)/include/zhdds
+
+###############################################################################
+# Modify build flags for debug/release
+###############################################################################
+ifeq ($(DEBUG),1)
+CXXFLAGS += -g -O0
+ifeq ($(SHAREDLIB),1)
+ZHDDSLIBS = -lzhdds_cppd -lzhdds_cd -lzhdds_kerneld
+else
+ZHDDSLIBS = -lzhdds_cppzd -lzhdds_czd -lzhdds_kernelzd
+endif
+else
+CXXFLAGS += -O2
+ifeq ($(SHAREDLIB),1)
+ZHDDSLIBS = -lzhdds_cpp -lzhdds_c -lzhdds_kernel
+else
+ZHDDSLIBS = -lzhdds_cppz -lzhdds_cz -lzhdds_kernelz
+endif
+endif
+
+LIBS = -L$(ZHDDSHOME)/lib/$(ARCH) $(ZHDDSLIBS) $(SYSLIBS)
+
+
+SOURCES = src/Hello.cxx                 \
+          src/HelloPublisher.cxx        \
+          src/HelloSubscriber.cxx
+
+SOURCES_IDL = src/idl/HelloWorld.cxx    \
+          src/idl/HelloWorldPlugin.cxx  \
+          src/idl/HelloWorldSupport.cxx
+
+HEADERS = src/Hello.h                   \
+          src/HelloPublisher.h          \
+          src/HelloSubscriber.h
+
+HEADERS_IDL = src/idl/HelloWorld.h      \
+          src/idl/HelloWorldPlugin.h    \
+          src/idl/HelloWorldSupport.h
+
+DIRECTORIES   = objs.dir objs/$(ARCH).dir
+EXECUTABLE    = Hello
+SOURCES_NODIR = $(notdir $(SOURCES)) $(notdir $(SOURCES_IDL))
+OBJECTS       = $(SOURCES_NODIR:%.cxx=objs/$(ARCH)/%.o)
+
+
+###############################################################################
+# Build Rules
+###############################################################################
+$(ARCH): $(DIRECTORIES) $(OBJECTS) $(EXECUTABLE:%=objs/$(ARCH)/%.o) \
+	       $(EXECUTABLE:%=objs/$(ARCH)/%.out)
+
+objs/$(ARCH)/%.out: objs/$(ARCH)/%.o 
+	$(CXXLD) $(CXXLDFLAGS) -o $(@:%.out=%) $(OBJECTS) $(LIBS)
+
+objs/$(ARCH)/HelloWorld.o: src/idl/HelloWorld.cxx $(HEADERS_IDL)
+	$(CXX) $(CXXFLAGS) -o $@ $(DEFINES) $(INCLUDES) -c $<
+
+objs/$(ARCH)/HelloWorldPlugin.o: src/idl/HelloWorldPlugin.cxx $(HEADERS_IDL)
+	$(CXX) $(CXXFLAGS) -o $@ $(DEFINES) $(INCLUDES) -c $<
+
+objs/$(ARCH)/HelloWorldSupport.o: src/idl/HelloWorldSupport.cxx $(HEADERS_IDL)
+	$(CXX) $(CXXFLAGS) -o $@ $(DEFINES) $(INCLUDES) -c $<
+
+objs/$(ARCH)/%.o: src/%.cxx $(HEADERS) $(HEADERS_IDL)
+	$(CXX) $(CXXFLAGS) -o $@ $(DEFINES) $(INCLUDES) -c $<
+
+
+# Rule to rebuild the generated files when the .idl file change
+$(SOURCES_IDL) $(HEADERS_IDL): src/HelloWorld.idl
+	@mkdir -p src/idl
+ifeq ($(OS_ARCH), i86Win32)
+	call $(ZHDDSHOME)/bin/zhddstrans.bat -d src/idl src/HelloWorld.idl -replace -language C++
+else
+	$(ZHDDSHOME)/bin/zhddstrans -d src/idl src/HelloWorld.idl -replace -language C++
+endif
+
+generate: $(SOURCES_IDL) $(HEADERS_IDL)
+
+# Here is how we create those subdirectories automatically.
+%.dir : 
+	@echo "Checking directory $*"
+	@if [ ! -d $* ]; then \
+		echo "Making directory $*"; \
+		mkdir -p $* ; \
+	fi;

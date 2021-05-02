@@ -1,0 +1,23 @@
+const long HELLODDS_MAX_PAYLOAD_SIZE = 8192;
+const long HELLODDS_MAX_STRING_SIZE = 64;
+
+struct HelloWorld {
+    /*string<HELLODDS_MAX_STRING_SIZE>             prefix;
+    long                                         sampleId;
+    sequence<octet, HELLODDS_MAX_PAYLOAD_SIZE>   payload;*/
+
+	long  sampleId;
+	long  pub_num;
+	long  pub_stat;
+	float temperature;
+	float humidity;
+	long  wind_speed;
+
+	long  direction;
+	/*enum  direction{
+		north,
+		south,
+		west,
+		east};*/
+};
+
