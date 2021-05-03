@@ -17,11 +17,9 @@ public:
 	Mysql();
 	~Mysql();
 	bool ConnectToMysql();
-	void CheckConnection();
+	bool CheckConnection();
 	bool DisconnectToMysql();
-	void InsertMember();
-	void DropMember();
-	void InputManey();
-	void CheckMember();
-	void CheckInformation();
+	void InsertWeatherInfo();
+	void CheckWeatherInfo();
+	
 };

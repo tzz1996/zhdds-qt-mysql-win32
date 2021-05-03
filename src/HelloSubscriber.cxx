@@ -8,6 +8,7 @@
 #include <errno.h>
 
 #include "HelloSubscriber.h"
+// 前置声明的一部分
 #include "MainWindow.h"
 
 #define POLL_PERIOD_SEC         1	// 发送频率

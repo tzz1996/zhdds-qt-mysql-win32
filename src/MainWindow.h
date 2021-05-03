@@ -11,11 +11,11 @@
 #include "HelloWorldSupport.h"
 #include "HelloSubscriber.h"
 
-QT_BEGIN_NAMESPACE
-class QAction;
-class QMenu;
-class QPlainTextEdit;
-QT_END_NAMESPACE
+//QT_BEGIN_NAMESPACE
+//class QAction;
+//class QMenu;
+//class QPlainTextEdit;
+//QT_END_NAMESPACE
 
 
 class MainWindow : public QMainWindow

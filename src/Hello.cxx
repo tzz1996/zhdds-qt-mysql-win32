@@ -562,6 +562,9 @@ int main(int argc, char **argv) {
 		textEdit.append("connect to mysql failed!");
 	}
 
+	//mysql.InsertWeatherInfo();
+	mysql.CheckWeatherInfo();
+
 	// 显示程序框
 	textEdit.show();
 	// 断开mysql连接

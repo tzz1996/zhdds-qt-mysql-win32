@@ -15,7 +15,7 @@ MainWindow::MainWindow()
 	//
 	// 注册HelloWorldSeq类型用于signal&slot机制
 	//
-	qRegisterMetaType<HelloWorldSeq>("HelloWorldSeq");
+	//qRegisterMetaType<HelloWorldSeq>("HelloWorldSeq");
 
 	//
 	// init mainwindow
@@ -171,15 +171,20 @@ void MainWindow::initSubscriber() {
 	textEdit->appendPlainText("init helloListener...");
 	HelloListener listener(1, 0);
 	helloListener = listener;
-	helloListener.main_window = this;
+
 	if (helloListener.getSampleRcvdCount() == 0)
 		textEdit->appendPlainText("init helloListener success.");
 	else
 		textEdit->appendPlainText("init helloListener failed.");
 
+	// 实现MainWindow和HelloListener类互相引用
+	helloListener.main_window = this;
+
 	// 连接qt信号槽
 	// 意义：使qt主线程接收到dds自动创建的接收数据的线程的信号，
 	//        达到能通过dds子线程监听函数显示主界面信息的效果。
+	// 连接前先注册HelloWorldSeq类型用于signal&slot机制
+	qRegisterMetaType<HelloWorldSeq>("HelloWorldSeq");
 	connect(&helloListener, SIGNAL(send_msg(HelloWorldSeq)), this, SLOT(recv_msg(HelloWorldSeq)));
 
 	// 创建订阅者
