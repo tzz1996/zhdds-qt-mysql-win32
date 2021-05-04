@@ -375,7 +375,9 @@ HelloListener::HelloListener(int verbose, int sampleCount):
 			main_window = NULL;
     }
     
-HelloListener::~HelloListener() {}
+HelloListener::~HelloListener() {
+	main_window = NULL;
+}
 
 HelloListener::HelloListener(const HelloListener &ref):
     _theVerbose(ref._theVerbose),

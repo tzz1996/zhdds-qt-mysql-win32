@@ -11,6 +11,8 @@
 #include "HelloWorldSupport.h"
 #include "HelloSubscriber.h"
 
+#include "connect_to_mysql.h"
+
 //QT_BEGIN_NAMESPACE
 //class QAction;
 //class QMenu;
@@ -92,10 +94,13 @@ private:
 	DDSPublisher*			 publisher;
     DDSDataWriter*			 dataWriter;
 	HelloWorldDataWriter*    helloWriter;
+	int                      sample_id;
 	// dds subscriber
 	HelloListener            helloListener;
 	DDSSubscriber*			 subscriber;
     DDSDataReader*			 dataReader;
+	// mysql
+	Mysql                    mysql;
 };
 
 #endif

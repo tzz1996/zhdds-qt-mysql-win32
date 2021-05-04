@@ -49,7 +49,8 @@ MainWindow::MainWindow()
 	helloWriter = NULL;
 	subscriber = NULL;
 	dataReader = NULL;
-	
+	sample_id = 1;
+
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -113,6 +114,7 @@ void MainWindow::about()
 }
 
 void MainWindow::initPublisher() {
+	textEdit->appendPlainText("=======================================");
 	textEdit->appendPlainText("init publisher...");
 	//startPublisher();
     
@@ -165,6 +167,7 @@ void MainWindow::initSubscriber() {
 	DDS_ReturnCode_t rc = DDS_RETCODE_OK;
     DDS_UnsignedLong i = 0;
 
+	textEdit->appendPlainText("=======================================");
 	textEdit->appendPlainText("init subscriber...");
 
 	// 初始化helloListener类
@@ -210,6 +213,18 @@ void MainWindow::initSubscriber() {
         return;
     }
 
+	// init mysql
+	bool res = false;
+	res = mysql.ConnectToMysql();
+
+	if (res == true) {
+		textEdit->appendPlainText("connect to mysql success!");
+	}
+	else if (res == false) {
+		textEdit->appendPlainText("connect to mysql failed!");
+	}
+	//mysql.CheckWeatherInfo();
+
 	textEdit->appendPlainText("init subscriber complete.");
 }
 
@@ -217,6 +232,7 @@ void MainWindow::sendOneMessage() {
 	HelloWorld *instance = NULL; 
 	DDS_ReturnCode_t rc;
 
+	textEdit->appendPlainText("=======================================");
 	textEdit->appendPlainText("send one message...");
 	// 创建数据实例
 	textEdit->appendPlainText("create data instance...");
@@ -227,6 +243,8 @@ void MainWindow::sendOneMessage() {
         deleteParticipant();
     }
 	textEdit->appendPlainText("create data instance success.");
+
+	instance->sampleId = sample_id++;
 	// 发送一个数据
 	rc = helloWriter->write(
                         *instance, 
@@ -255,6 +273,7 @@ void MainWindow::createParticipant() {
 	//
 	DDS_ReturnCode_t rc;
 
+	textEdit->appendPlainText("=======================================");
 	textEdit->appendPlainText("create participant...");
     participant = DDSDomainParticipantFactory::get_instance()->
                         create_participant(
@@ -299,9 +318,23 @@ void MainWindow::createParticipant() {
 void MainWindow::deleteParticipant() {
 	DDS_ReturnCode_t rc;
 
+	textEdit->appendPlainText("=======================================");
 	textEdit->appendPlainText("delete participant...");
-	if (dataReader != NULL)
+	// 清空内存中的subscriber内容
+	if (publisher != NULL) {
+		publisher->delete_contained_entities();
+		publisher = NULL;
+	}
+	// 清空内存中的subscriber内容
+	if (dataReader != NULL) {
 		dataReader->set_listener(NULL);
+		dataReader->delete_contained_entities();
+		dataReader = NULL;
+		helloListener.disconnect();
+		helloListener.~HelloListener();
+		subscriber->delete_contained_entities();
+		subscriber = NULL;
+	}
 	if (participant != NULL) {
         // 删除域参与者包含的实体
         rc = participant->delete_contained_entities();
@@ -316,10 +349,18 @@ void MainWindow::deleteParticipant() {
             textEdit->appendPlainText("delete participant failed.");
         }
     }
+	// 断开mysql连接
+	if (mysql.CheckConnection() == true)
+		if (mysql.DisconnectToMysql())
+			textEdit->appendPlainText("disconnect to mysql success.");
+
 	textEdit->appendPlainText("delete participant complete.");
 }
 
 void MainWindow::recv_msg(HelloWorldSeq dataSeq) {
+	if (dataSeq[0].sampleId < sample_id)
+		return;
+
 	QString s;
 	QString direction;
 	QString sample_id;
@@ -328,6 +369,7 @@ void MainWindow::recv_msg(HelloWorldSeq dataSeq) {
 
 	s.sprintf("%s%d","hello",123);
 	
+	textEdit->appendPlainText("=======================================");
 	textEdit->appendPlainText("receive signal from class HelloSubscriber.");
 	for (int i = 0; i < dataSeq.length(); ++i) {
 		textEdit->appendPlainText("this is one of dataSeq[]");

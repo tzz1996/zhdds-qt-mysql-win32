@@ -8,7 +8,9 @@
 using namespace std;
 
 Mysql::Mysql() {
-
+	ifconnect = false;
+	result = NULL;
+	fd = NULL;
 }
 
 

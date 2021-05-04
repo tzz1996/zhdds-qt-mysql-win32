@@ -2,6 +2,8 @@
 #include <iostream>
 #include <mysql.h>
 
+#include "HelloWorld.h"
+
 
 
 class Mysql {
@@ -22,4 +24,5 @@ public:
 	void InsertWeatherInfo();
 	void CheckWeatherInfo();
 	
+	void InsertWeatherInfoWithInstance(HelloWorld* instance);
 };
