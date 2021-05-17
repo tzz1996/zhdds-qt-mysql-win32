@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MainWindow.h'
 **
-** Created: Tue May 4 17:04:03 2021
+** Created: Mon May 17 18:35:47 2021
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      14,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -41,8 +41,10 @@ static const uint qt_meta_data_MainWindow[] = {
       96,   11,   11,   11, 0x08,
      113,   11,   11,   11, 0x08,
      130,   11,   11,   11, 0x08,
-     150,   11,   11,   11, 0x08,
-     178,  170,   11,   11, 0x08,
+     148,   11,   11,   11, 0x08,
+     168,   11,   11,   11, 0x08,
+     188,   11,   11,   11, 0x08,
+     209,  201,   11,   11, 0x08,
 
        0        // eod
 };
@@ -51,9 +53,9 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "MainWindow\0\0newFile()\0open()\0bool\0"
     "save()\0saveAs()\0about()\0documentWasModified()\0"
     "initPublisher()\0initSubscriber()\0"
-    "sendOneMessage()\0createParticipant()\0"
-    "deleteParticipant()\0dataSeq\0"
-    "recv_msg(HelloWorldSeq)\0"
+    "sendOneMessage()\0sendOneMessage2()\0"
+    "createParticipant()\0deleteParticipant()\0"
+    "sendWindow()\0dataSeq\0recv_msg(HelloWorldSeq)\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -73,9 +75,11 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->initPublisher(); break;
         case 7: _t->initSubscriber(); break;
         case 8: _t->sendOneMessage(); break;
-        case 9: _t->createParticipant(); break;
-        case 10: _t->deleteParticipant(); break;
-        case 11: _t->recv_msg((*reinterpret_cast< HelloWorldSeq(*)>(_a[1]))); break;
+        case 9: _t->sendOneMessage2(); break;
+        case 10: _t->createParticipant(); break;
+        case 11: _t->deleteParticipant(); break;
+        case 12: _t->sendWindow(); break;
+        case 13: _t->recv_msg((*reinterpret_cast< HelloWorldSeq(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -113,9 +117,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 14;
     }
     return _id;
 }

@@ -41,8 +41,10 @@ private slots:
 	void initPublisher();
 	void initSubscriber();
 	void sendOneMessage();
+	void sendOneMessage2();
 	void createParticipant();
 	void deleteParticipant();
+	void sendWindow();
 	// qt signal&slot
 	void recv_msg(HelloWorldSeq dataSeq);
 
@@ -87,6 +89,7 @@ private:
 	QAction*                 initSubscriberAct;
 	QAction*                 createParticipantAct;
 	QAction*                 deleteParticipantAct;
+	QAction*                 sendWindowAct;
 	// dds participant & topic
 	DDSDomainParticipant*    participant;
 	DDSTopic *               topic;
@@ -101,6 +104,14 @@ private:
     DDSDataReader*			 dataReader;
 	// mysql
 	Mysql                    mysql;
+	// send window attributes
+	QLineEdit*				 sample_id_edit;
+    QLineEdit*				 pub_num_edit;
+    QLineEdit*				 pub_stat_edit;
+	QLineEdit*				 temperature_edit;
+	QLineEdit*				 humidity_edit;
+	QLineEdit*				 wind_speed_edit;
+	QLineEdit*				 direction_edit;
 };
 
 #endif

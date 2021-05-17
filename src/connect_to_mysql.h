@@ -22,7 +22,18 @@ public:
 	bool CheckConnection();
 	bool DisconnectToMysql();
 	void InsertWeatherInfo();
+	void InsertWeatherInfo2(struct WeatherInfo arg);
 	void CheckWeatherInfo();
 	
 	void InsertWeatherInfoWithInstance(HelloWorld* instance);
+};
+
+struct WeatherInfo {
+	std::string sample_id;
+	std::string pub_num;
+	std::string pub_stat;
+	std::string temperature;
+	std::string humidity;
+	std::string wind_speed;
+	std::string direction;
 };

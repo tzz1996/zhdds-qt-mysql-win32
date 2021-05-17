@@ -267,6 +267,82 @@ void MainWindow::sendOneMessage() {
 	textEdit->appendPlainText("send one message complete!");
 }
 
+void MainWindow::sendOneMessage2() {
+	HelloWorld *instance = NULL; 
+	DDS_ReturnCode_t rc;
+
+	textEdit->appendPlainText("=======================================");
+	textEdit->appendPlainText("send one message...");
+	// 创建数据实例
+	textEdit->appendPlainText("create data instance...");
+    instance = HelloWorldTypeSupport::create_data_ex(
+                        DDS_BOOLEAN_FALSE);
+    if (instance == NULL) {
+        textEdit->appendPlainText("create instance failed.");
+        deleteParticipant();
+    }
+	textEdit->appendPlainText("create data instance success.");
+
+	// 根据输入初始化数据实例
+	instance->sampleId = sample_id_edit->text().toInt();
+	instance->direction = direction_edit->text().toInt();
+	instance->humidity = humidity_edit->text().toFloat();
+	instance->pub_num = pub_num_edit->text().toInt();
+	instance->pub_stat = pub_stat_edit->text().toInt();
+	instance->temperature = temperature_edit->text().toFloat();
+	instance->wind_speed = wind_speed_edit->text().toInt();
+	// 发送一个数据
+	rc = helloWriter->write(
+                        *instance, 
+                        DDS_HANDLE_NIL);
+	if (rc != DDS_RETCODE_OK) {
+		textEdit->appendPlainText("write data to dds failed.");
+		if (instance != NULL) {
+			HelloWorldTypeSupport::delete_data_ex(instance,
+							DDS_BOOLEAN_FALSE);
+			instance = NULL;
+			return;
+		}
+	}
+	if (instance != NULL) {
+        HelloWorldTypeSupport::delete_data_ex(instance,
+                        DDS_BOOLEAN_FALSE);
+        instance = NULL;
+    }
+
+	textEdit->appendPlainText("send one message complete!");
+}
+
+void MainWindow::sendWindow() {
+	QWidget *window = new QWidget;
+    sample_id_edit = new QLineEdit();
+    pub_num_edit = new QLineEdit();
+    pub_stat_edit = new QLineEdit();
+	temperature_edit = new QLineEdit();
+	humidity_edit = new QLineEdit();
+	wind_speed_edit = new QLineEdit();
+	direction_edit = new QLineEdit();
+	QPushButton *button = new QPushButton("send");
+
+    QFormLayout *layout = new QFormLayout;
+    layout->addRow(new QLabel(tr("sample id:")), sample_id_edit);
+    layout->addRow(new QLabel(tr("publisher number:")), pub_num_edit);
+    layout->addRow(new QLabel(tr("publisher state:")), pub_stat_edit);
+	layout->addRow(new QLabel(tr("temperature:")), temperature_edit);
+	layout->addRow(new QLabel(tr("humidity:")), humidity_edit);
+	layout->addRow(new QLabel(tr("wind speed:")), wind_speed_edit);
+	layout->addRow(new QLabel(tr("direction:")), direction_edit);
+	layout->addRow(new QLabel(tr("send one message:")), button);
+
+/*	connect(sample_id_edit, SIGNAL(editingFinished()),
+			this, SLOT(sendOneMessage2()))*/;
+	connect(button, SIGNAL(clicked()),
+            this, SLOT(sendOneMessage2()));
+
+    window->setLayout(layout);
+    window->show();
+}
+
 void MainWindow::createParticipant() {
 	//
 	// init dds participant
@@ -366,6 +442,9 @@ void MainWindow::recv_msg(HelloWorldSeq dataSeq) {
 	QString sample_id;
 	QString temperature;
 	QString wind_speed;
+	QString humidity;
+	QString pub_num;
+	QString pub_stat;
 
 	s.sprintf("%s%d","hello",123);
 	
@@ -376,13 +455,49 @@ void MainWindow::recv_msg(HelloWorldSeq dataSeq) {
 		//textEdit->appendPlainText(s);
 		direction.sprintf("direction:%d", dataSeq[i].direction);
 		sample_id.sprintf("sample id:%d", dataSeq[i].sampleId);
-		temperature.sprintf("temperature:%d", dataSeq[i].temperature);
+		temperature.sprintf("temperature:%f", dataSeq[i].temperature);
 		wind_speed.sprintf("wind speed:%d", dataSeq[i].wind_speed);
+		humidity.sprintf("humidity:%f", dataSeq[i].humidity);
+		pub_num.sprintf("pub_num:%d", dataSeq[i].pub_num);
+		pub_stat.sprintf("pub_stat:%d", dataSeq[i].pub_stat);
 
+		// 主界面显示传输数据信息
 		textEdit->appendPlainText(direction);
 		textEdit->appendPlainText(sample_id);
 		textEdit->appendPlainText(temperature);
 		textEdit->appendPlainText(wind_speed);
+		textEdit->appendPlainText(humidity);
+		textEdit->appendPlainText(pub_num);
+		textEdit->appendPlainText(pub_stat);
+
+		// 初始化WeatherInfo结构体
+		WeatherInfo arg;
+		QString qdirection;
+		QString qsample_id;
+		QString qtemperature;
+		QString qwind_speed;
+		QString qhumidity;
+		QString qpub_num;
+		QString qpub_stat;
+
+		qdirection.sprintf("%d", dataSeq[i].direction);
+		qsample_id.sprintf("%d", dataSeq[i].sampleId);
+		qtemperature.sprintf("%f", dataSeq[i].temperature);
+		qwind_speed.sprintf("%d", dataSeq[i].wind_speed);
+		qhumidity.sprintf("%f", dataSeq[i].humidity);
+		qpub_num.sprintf("%d", dataSeq[i].pub_num);
+		qpub_stat.sprintf("%d", dataSeq[i].pub_stat);
+
+		arg.direction = qdirection.toStdString();
+		arg.sample_id = qsample_id.toStdString();
+		arg.temperature = qtemperature.toStdString();
+		arg.wind_speed = qwind_speed.toStdString();
+		arg.humidity = qhumidity.toStdString();
+		arg.pub_num = qpub_num.toStdString();
+		arg.pub_stat = qpub_stat.toStdString();
+
+		// 插入mysql
+		mysql.InsertWeatherInfo2(arg);
 	}
 }
 
@@ -404,6 +519,9 @@ void MainWindow::createActions()
 
 	sendOneAct = new QAction("send one message...", this);
 	connect(sendOneAct, SIGNAL(triggered()), this, SLOT(sendOneMessage()));
+
+	sendWindowAct = new QAction("create send window...", this);
+	connect(sendWindowAct, SIGNAL(triggered()), this, SLOT(sendWindow()));
 
 	createParticipantAct = new QAction("create participant...", this);
 	connect(createParticipantAct, SIGNAL(triggered()), this, SLOT(createParticipant()));
@@ -493,6 +611,7 @@ void MainWindow::createMenus()
 	publisherMenu = menuBar()->addMenu("Publisher");
 	publisherMenu->addAction(initPublisherAct);
 	publisherMenu->addAction(sendOneAct);
+	publisherMenu->addAction(sendWindowAct);
 	// subscriber menu
 	subscriberMenu = menuBar()->addMenu("Subscriber");
 	subscriberMenu->addAction(initSubscriberAct);

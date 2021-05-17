@@ -84,6 +84,25 @@ void Mysql::InsertWeatherInfo() {
 
 }
 
+void Mysql::InsertWeatherInfo2(struct WeatherInfo arg) {
+	string insert_str;
+
+	insert_str = "INSERT INTO weather_info VALUES('" +
+		arg.sample_id + "', '" +
+		arg.pub_num + "', '" +
+		arg.pub_stat + "', '" +
+		arg.temperature + "', '" +
+		arg.humidity + "', '" +
+		arg.wind_speed + "', '" +
+		arg.direction + "');";
+
+	if (mysql_query(&myCont, insert_str.c_str()) == 0)
+		cout << "weatherinfo插入成功" << endl;
+	else
+		cout << "weatherinfo插入失败" << endl;
+}
+
+
 void Mysql::CheckWeatherInfo() {
 	string insert_str;
 	string sample_id = "2";
