@@ -18,6 +18,11 @@
 //class QMenu;
 //class QPlainTextEdit;
 //QT_END_NAMESPACE
+QT_BEGIN_NAMESPACE
+class QAbstractItemModel;
+class QAbstractItemView;
+class QItemSelectionModel;
+QT_END_NAMESPACE
 
 
 class MainWindow : public QMainWindow
@@ -47,6 +52,8 @@ private slots:
 	void sendWindow();
 	// qt signal&slot
 	void recv_msg(HelloWorldSeq dataSeq);
+	// pie func
+	void showPieAndBarChart();
 
 private:
     void createActions();
@@ -112,6 +119,16 @@ private:
 	QLineEdit*				 humidity_edit;
 	QLineEdit*				 wind_speed_edit;
 	QLineEdit*				 direction_edit;
+	//pieview
+	void setupPieModel();
+    void setupPieViews();
+    QAbstractItemModel *model;
+    QAbstractItemView *pieChart;
+    QItemSelectionModel *selectionModel;
+	//pie chart action
+	QAction*                 showPieChartAct;
+	// barview
+	QWidget *barChart;
 };
 
 #endif

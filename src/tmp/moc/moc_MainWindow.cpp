@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MainWindow.h'
 **
-** Created: Mon May 17 18:35:47 2021
+** Created: Wed May 26 18:52:08 2021
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      14,   14, // methods
+      15,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -45,6 +45,7 @@ static const uint qt_meta_data_MainWindow[] = {
      168,   11,   11,   11, 0x08,
      188,   11,   11,   11, 0x08,
      209,  201,   11,   11, 0x08,
+     233,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -56,6 +57,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "sendOneMessage()\0sendOneMessage2()\0"
     "createParticipant()\0deleteParticipant()\0"
     "sendWindow()\0dataSeq\0recv_msg(HelloWorldSeq)\0"
+    "showPieAndBarChart()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -80,6 +82,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 11: _t->deleteParticipant(); break;
         case 12: _t->sendWindow(); break;
         case 13: _t->recv_msg((*reinterpret_cast< HelloWorldSeq(*)>(_a[1]))); break;
+        case 14: _t->showPieAndBarChart(); break;
         default: ;
         }
     }
@@ -117,9 +120,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 14)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 14;
+        _id -= 15;
     }
     return _id;
 }

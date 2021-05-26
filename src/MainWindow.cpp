@@ -4,6 +4,9 @@
 #include "HelloPublisher.h"
 #include "HelloSubscriber.h"
 
+#include "pieview.h"
+#include "barview.h"
+
 
 // 若没有在项目中添加moc.exe生成的moc_MainWindow.cpp
 // 文件，则需要如下引用，否则发生链接错误
@@ -502,6 +505,43 @@ void MainWindow::recv_msg(HelloWorldSeq dataSeq) {
 }
 
 
+void MainWindow::setupPieModel()
+{
+    model = new QStandardItemModel(8, 2, this);
+    model->setHeaderData(0, Qt::Horizontal, tr("Label"));
+    model->setHeaderData(1, Qt::Horizontal, tr("Quantity"));
+}
+
+void MainWindow::setupPieViews()
+{
+    QSplitter *splitter = new QSplitter;
+    QTableView *table = new QTableView;
+    pieChart = new PieView;
+	barChart = new BarView;
+    splitter->addWidget(table);
+    splitter->addWidget(pieChart);
+	splitter->addWidget(barChart);
+    splitter->setStretchFactor(0, 0);
+    splitter->setStretchFactor(1, 1);
+
+    table->setModel(model);
+    pieChart->setModel(model);
+
+    QItemSelectionModel *selectionModel = new QItemSelectionModel(model);
+    table->setSelectionModel(selectionModel);
+    pieChart->setSelectionModel(selectionModel);
+
+    QHeaderView *headerView = table->horizontalHeader();
+    headerView->setStretchLastSection(true);
+
+    //setCentralWidget(splitter);
+	splitter->show();
+}
+
+void MainWindow::showPieAndBarChart() {
+	setupPieModel();
+	setupPieViews();
+}
 void MainWindow::documentWasModified()
 {
     setWindowModified(textEdit->document()->isModified());
@@ -529,6 +569,11 @@ void MainWindow::createActions()
 	deleteParticipantAct = new QAction("delete participant...", this);
 	connect(deleteParticipantAct, SIGNAL(triggered()), this, SLOT(deleteParticipant()));
 	// dds end
+
+	// pie chart start
+	showPieChartAct = new QAction("show pie chart...", this);
+	connect(showPieChartAct, SIGNAL(triggered()), this, SLOT(showPieAndBarChart()));
+	// pei chart end
 
     newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
@@ -615,6 +660,7 @@ void MainWindow::createMenus()
 	// subscriber menu
 	subscriberMenu = menuBar()->addMenu("Subscriber");
 	subscriberMenu->addAction(initSubscriberAct);
+	subscriberMenu->addAction(showPieChartAct);
 	// participant menu
 	participantMenu = menuBar()->addMenu("participant");
 	participantMenu->addAction(createParticipantAct);

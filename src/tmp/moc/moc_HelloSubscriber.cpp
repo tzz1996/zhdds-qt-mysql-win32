@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'HelloSubscriber.h'
 **
-** Created: Mon May 3 00:38:15 2021
+** Created: Wed May 26 14:12:14 2021
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.3)
 **
 ** WARNING! All changes made in this file will be lost!

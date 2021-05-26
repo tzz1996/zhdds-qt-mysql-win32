@@ -13,6 +13,7 @@
 #include "MainWindow.h"
 
 
+
 #define DEFAULT_DOMAIN_ID           0				// 默认域ID
 #define APPLICATION_NAME            "Hello"			// 应用程序名称
 #define DEFAULT_PAYLOAD             1024			// 默认负载
