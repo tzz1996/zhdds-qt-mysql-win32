@@ -117,3 +117,20 @@ int BarView::getMaxVal(QList<int> list)
     return list.last();
 }
 
+void BarView::changeValues(WeatherInfo info) {
+	m_answerMap.clear();
+
+	m_answerMap.insert("sample_id", QString::fromStdString(info.sample_id).toInt());
+	m_answerMap.insert("pub_num", QString::fromStdString(info.pub_num).toInt());
+	m_answerMap.insert("pub_stat", QString::fromStdString(info.pub_stat).toInt());
+	m_answerMap.insert("temperature", QString::fromStdString(info.temperature).toFloat());
+	m_answerMap.insert("humidity", QString::fromStdString(info.humidity).toFloat());
+	m_answerMap.insert("wind_speed", QString::fromStdString(info.wind_speed).toInt());
+	m_answerMap.insert("direction", QString::fromStdString(info.direction).toInt());
+
+	m_answerStrList = m_answerMap.keys();
+    m_numList = m_answerMap.values();
+    foreach (int num, m_numList) {
+        m_nPeopleCount += num;
+    }
+}

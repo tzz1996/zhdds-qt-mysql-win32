@@ -514,13 +514,32 @@ void MainWindow::setupPieModel()
 
 void MainWindow::setupPieViews()
 {
+	// 装载器
     QSplitter *splitter = new QSplitter;
+	// 构造表格
     QTableView *table = new QTableView;
+	// 构造查询界面
+	QWidget *window = new QWidget;
+
+	// 构造饼状图和柱状图
     pieChart = new PieView;
 	barChart = new BarView;
+	barChart2 = new BarView;
+
+	// 初始化查询界面
+	QFormLayout *layout = new QFormLayout;
+	sample_id_check_edit = new QLineEdit();
+	QPushButton *button = new QPushButton("check");
+	layout->addRow(new QLabel(tr("sample id:")), sample_id_check_edit);
+	layout->addRow(new QLabel(tr("check one message:")), button);
+	connect(button, SIGNAL(clicked()),
+            this, SLOT(checkInfoAndShow()));
+	window->setLayout(layout);
+
     splitter->addWidget(table);
     splitter->addWidget(pieChart);
-	splitter->addWidget(barChart);
+	splitter->addWidget(barChart2);
+	splitter->addWidget(window);
     splitter->setStretchFactor(0, 0);
     splitter->setStretchFactor(1, 1);
 
@@ -538,9 +557,148 @@ void MainWindow::setupPieViews()
 	splitter->show();
 }
 
+void MainWindow::checkInfoAndShow() {
+	mysql.CheckWeatherInfo2(sample_id_check_edit->text().toStdString());
+
+	// 根据查询结果修改表格和饼状图和柱状图
+	if (mysql.HaveSqlRowData()) {
+		//
+		// 修改表格和饼状图
+		//
+
+		//model->removeRows(0, 7, QModelIndex());
+		struct WeatherInfo info;
+		info = mysql.GetSqlRowData();
+
+		model->setData(model->index(0, 0, QModelIndex()),
+				       "sample_id");
+		model->setData(model->index(0, 1, QModelIndex()),
+					   QString::fromStdString(info.sample_id).toInt());
+		model->setData(model->index(0, 0, QModelIndex()),
+					   QColor("#99e600"), 
+					   Qt::DecorationRole);
+
+		model->setData(model->index(1, 0, QModelIndex()),
+					   "pub_num");
+		model->setData(model->index(1, 1, QModelIndex()),
+					   QString::fromStdString(info.pub_num).toInt());
+		model->setData(model->index(1, 0, QModelIndex()),
+					   QColor("#99cc00"), 
+					   Qt::DecorationRole);
+
+		model->setData(model->index(2, 0, QModelIndex()),
+					   "pub_stat");
+		model->setData(model->index(2, 1, QModelIndex()),
+					   QString::fromStdString(info.pub_num).toInt());
+		model->setData(model->index(2, 0, QModelIndex()),
+					   QColor("#99b300"), 
+					   Qt::DecorationRole);
+
+		model->setData(model->index(3, 0, QModelIndex()),
+					   "temperature");
+		model->setData(model->index(3, 1, QModelIndex()),
+					   QString::fromStdString(info.temperature));
+		model->setData(model->index(3, 0, QModelIndex()),
+					   QColor("#9f991a"), 
+					   Qt::DecorationRole);
+
+		model->setData(model->index(4, 0, QModelIndex()),
+					   "humidity");
+		model->setData(model->index(4, 1, QModelIndex()),
+					   QString::fromStdString(info.humidity));
+		model->setData(model->index(4, 0, QModelIndex()),
+					   QColor("#a48033"), 
+					   Qt::DecorationRole);
+
+		model->setData(model->index(5, 0, QModelIndex()),
+					   "wind_speed");
+		model->setData(model->index(5, 1, QModelIndex()),
+					   QString::fromStdString(info.wind_speed));
+		model->setData(model->index(5, 0, QModelIndex()),
+					   QColor("#a9664d"), 
+					   Qt::DecorationRole);
+
+		model->setData(model->index(6, 0, QModelIndex()),
+					   "direction");
+		model->setData(model->index(6, 1, QModelIndex()),
+					   QString::fromStdString(info.direction));
+		model->setData(model->index(6, 0, QModelIndex()),
+					   QColor("#ae4d66"), 
+					   Qt::DecorationRole);
+
+		//
+		// 修改柱状图
+		//
+		barChart2->changeValues(info);
+		barChart2->update();
+	}
+	else {
+		return;
+	}
+}
+
 void MainWindow::showPieAndBarChart() {
 	setupPieModel();
 	setupPieViews();
+
+	//
+	// 初始化表格和饼状图
+	//
+	model->setData(model->index(0, 0, QModelIndex()),
+				   "tzz1");
+	model->setData(model->index(0, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(0, 0, QModelIndex()),
+				   QColor("#99e600"), 
+				   Qt::DecorationRole);
+
+	model->setData(model->index(1, 0, QModelIndex()),
+				   "tzz2");
+	model->setData(model->index(1, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(1, 0, QModelIndex()),
+				   QColor("#99cc00"), 
+				   Qt::DecorationRole);
+
+	model->setData(model->index(2, 0, QModelIndex()),
+				   "tzz3");
+	model->setData(model->index(2, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(2, 0, QModelIndex()),
+				   QColor("#99b300"), 
+				   Qt::DecorationRole);
+
+	model->setData(model->index(3, 0, QModelIndex()),
+				   "tzz4");
+	model->setData(model->index(3, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(3, 0, QModelIndex()),
+				   QColor("#9f991a"), 
+				   Qt::DecorationRole);
+
+	model->setData(model->index(4, 0, QModelIndex()),
+				   "tzz5");
+	model->setData(model->index(4, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(4, 0, QModelIndex()),
+				   QColor("#a48033"), 
+				   Qt::DecorationRole);
+
+	model->setData(model->index(5, 0, QModelIndex()),
+				   "tzz6");
+	model->setData(model->index(5, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(5, 0, QModelIndex()),
+				   QColor("#a9664d"), 
+				   Qt::DecorationRole);
+
+	model->setData(model->index(6, 0, QModelIndex()),
+				   "tzz7");
+	model->setData(model->index(6, 1, QModelIndex()),
+				   "1");
+	model->setData(model->index(6, 0, QModelIndex()),
+				   QColor("#ae4d66"), 
+				   Qt::DecorationRole);
 }
 void MainWindow::documentWasModified()
 {
@@ -571,8 +729,8 @@ void MainWindow::createActions()
 	// dds end
 
 	// pie chart start
-	showPieChartAct = new QAction("show pie chart...", this);
-	connect(showPieChartAct, SIGNAL(triggered()), this, SLOT(showPieAndBarChart()));
+	showChartAct = new QAction("show chart...", this);
+	connect(showChartAct, SIGNAL(triggered()), this, SLOT(showPieAndBarChart()));
 	// pei chart end
 
     newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
@@ -660,7 +818,7 @@ void MainWindow::createMenus()
 	// subscriber menu
 	subscriberMenu = menuBar()->addMenu("Subscriber");
 	subscriberMenu->addAction(initSubscriberAct);
-	subscriberMenu->addAction(showPieChartAct);
+	subscriberMenu->addAction(showChartAct);
 	// participant menu
 	participantMenu = menuBar()->addMenu("participant");
 	participantMenu->addAction(createParticipantAct);

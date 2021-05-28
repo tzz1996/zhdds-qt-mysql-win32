@@ -12,6 +12,7 @@
 #include "HelloSubscriber.h"
 
 #include "connect_to_mysql.h"
+#include "barview.h"
 
 //QT_BEGIN_NAMESPACE
 //class QAction;
@@ -54,6 +55,8 @@ private slots:
 	void recv_msg(HelloWorldSeq dataSeq);
 	// pie func
 	void showPieAndBarChart();
+	// check func
+	void checkInfoAndShow();
 
 private:
     void createActions();
@@ -119,16 +122,19 @@ private:
 	QLineEdit*				 humidity_edit;
 	QLineEdit*				 wind_speed_edit;
 	QLineEdit*				 direction_edit;
-	//pieview
+	// pieview
 	void setupPieModel();
     void setupPieViews();
     QAbstractItemModel *model;
     QAbstractItemView *pieChart;
     QItemSelectionModel *selectionModel;
-	//pie chart action
-	QAction*                 showPieChartAct;
+	// pie chart action
+	QAction*                 showChartAct;
 	// barview
 	QWidget *barChart;
+	BarView* barChart2;
+	// check window
+	QLineEdit*				 sample_id_check_edit;
 };
 
 #endif

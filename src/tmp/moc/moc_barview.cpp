@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'barview.h'
 **
-** Created: Wed May 26 18:49:21 2021
+** Created: Fri May 28 17:25:27 2021
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.3)
 **
 ** WARNING! All changes made in this file will be lost!

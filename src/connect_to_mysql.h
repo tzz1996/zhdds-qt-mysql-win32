@@ -24,6 +24,9 @@ public:
 	void InsertWeatherInfo();
 	void InsertWeatherInfo2(struct WeatherInfo arg);
 	void CheckWeatherInfo();
+	void CheckWeatherInfo2(std::string sample_id);
+	bool HaveSqlRowData();
+	struct WeatherInfo GetSqlRowData();
 	
 	void InsertWeatherInfoWithInstance(HelloWorld* instance);
 };

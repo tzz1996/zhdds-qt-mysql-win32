@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QMap>
 
+#include "connect_to_mysql.h"
+
  
 class BarView : public QWidget
 {
@@ -25,6 +27,9 @@ private:
     QList<int> m_numList;
     QList<QString> m_answerStrList;
     int m_nPeopleCount;
+
+public:
+	void changeValues(struct WeatherInfo info);
 
 };
  

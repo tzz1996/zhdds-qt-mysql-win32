@@ -127,3 +127,54 @@ void Mysql::CheckWeatherInfo() {
 	if (result != NULL)
 		mysql_free_result(result);
 }
+
+void Mysql::CheckWeatherInfo2(std::string sample_id) {
+	string insert_str;
+	insert_str = "SELECT * FROM weather_info WHERE sample_id='" + sample_id + "'";
+
+	res = mysql_query(&myCont, insert_str.c_str());
+	if (!res) {
+		result = mysql_store_result(&myCont);
+		if (result) {
+			sql_row = mysql_fetch_row(result);
+		}
+	}
+
+	if (sql_row == NULL) {
+		cout << "no such sample id." << endl;
+		return;
+	}
+
+	cout << "====================" << endl;
+	cout << "sample id = " << sql_row[0] << endl;
+	cout << "pub num = " << sql_row[1] << endl;
+	cout << "pub stat = " << sql_row[2] << endl;
+	cout << "temperature = " << sql_row[3] << endl;
+	cout << "humidity = " << sql_row[4] << endl;
+	cout << "wind speed = " << sql_row[5] << endl;
+	cout << "direction = " << sql_row[6] << endl;
+
+	if (result != NULL)
+		mysql_free_result(result);
+}
+
+bool Mysql::HaveSqlRowData() {
+	if (sql_row != NULL)
+		return true;
+	else
+		return false;
+}
+
+struct WeatherInfo Mysql::GetSqlRowData() {
+	struct WeatherInfo info;
+
+	info.sample_id = sql_row[0];
+	info.pub_num = sql_row[1];
+	info.pub_stat = sql_row[2];
+	info.temperature = sql_row[3];
+	info.humidity = sql_row[4];
+	info.wind_speed = sql_row[5];
+	info.direction = sql_row[6];
+
+	return info;
+}
